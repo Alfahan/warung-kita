@@ -42,16 +42,44 @@ class ProductController extends Controller
             "data" => $product
         ]);
     }
-    function put($id)
+    function put($id, Request $request)
     {
-        return response()->json([
-            "message" => "PUT Method Success ".$id
-        ]);
+        $product = Product::where('id', $id)->first();
+        if($product){
+            $product->name = $request->name ? $request->name : $product->name ;
+            $product->price = $request->price ? $request->price : $product->price;
+            $product->quantity = $request->quantity ? $request->quantity : $product->quantity;
+            $product->active = $request->active ? $request->active : $product->active;
+            $product->description = $request->description ? $request->description : $product->description;
+
+            $product->save();
+            return response()->json(
+                [
+                "message" => "PUT Method Success ".$id
+                ]
+            );
+        }
+        return response()->json(
+            [
+            "message" => "Product with id ".$id." Not Found"
+            ],400
+        );
     }
     function delete($id)
     {
-        return response()->json([
-            "message" => "DELETE Method Success ".$id
-        ]);
+        $product = Product::where('id', $id)->first();
+        if($product){
+            $product->delete();
+            return response()->json(
+                [
+                "message" => "DELETE Product Id ".$id. " Success"
+                ]
+            );
+        }
+        return response()->json(
+            [
+            "message" => "Product with id ".$id." Not Found"
+            ],400
+        );
     }
 }
